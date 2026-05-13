@@ -114,6 +114,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final List<Widget> screens = [
       HomeScreen(
         userName: _userData?['displayName'],
+        baseUrl: baseUrl,
+        sessionCookie: _sessionCookie,
         onNavigate: (index) {
           setState(() {
             _selectedIndex = index;

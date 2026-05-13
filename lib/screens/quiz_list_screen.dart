@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'quiz_game_screen.dart';
+import 'lobby_screen.dart';
 
 class QuizListScreen extends StatefulWidget {
   final bool isAuthenticated;
@@ -16,6 +17,46 @@ class QuizListScreen extends StatefulWidget {
 class _QuizListScreenState extends State<QuizListScreen> {
   List quizzes = [];
   bool isLoading = true;
+
+  Future<void> _startQuizSession(int quizId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${widget.baseUrl}/api/quizzes/$quizId/play'),
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          if (widget.sessionCookie != null) 'cookie': widget.sessionCookie!,
+        },
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LobbyScreen(
+              sessionData: data['session'],
+              baseUrl: widget.baseUrl,
+              sessionCookie: widget.sessionCookie,
+            ),
+          ),
+        );
+      } else {
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Erreur lors de la création de la session')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erreur réseau')),
+        );
+      }
+    }
+  }
 
   Future<void> fetchQuizzes() async {
     try {
@@ -67,9 +108,11 @@ class _QuizListScreenState extends State<QuizListScreen> {
                   trailing: Icon(widget.isAuthenticated ? Icons.play_circle_fill : Icons.lock_outline, color: const Color(0xFF7C3AED), size: 32),
                   onTap: () {
                     if (widget.isAuthenticated) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => QuizGameScreen(quizId: quiz['id'], baseUrl: widget.baseUrl, sessionCookie: widget.sessionCookie)));
+                      _startQuizSession(quiz['id']);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Connectez-vous pour jouer !')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Connectez-vous pour jouer !'))
+                      );
                     }
                   },
                 ),
