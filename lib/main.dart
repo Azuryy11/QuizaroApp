@@ -91,7 +91,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Map<String, dynamic>? _userData;
   String? _sessionCookie;
 
-  final String baseUrl = 'https://localhost';
+  final String baseUrl = 'https://std37.beaupeyrat.com';
 
   void _onLoginSuccess(Map<String, dynamic> user, String? cookie) {
     setState(() {

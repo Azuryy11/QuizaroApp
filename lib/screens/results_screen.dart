@@ -275,6 +275,9 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   
                   debugPrint("NAVIGATION VERS REVIEW: Envoi de ${questionsList.length} questions");
 
+                  final myResults = results.firstWhere((p) => p['isMe'] == true, orElse: () => null);
+                  final userAnswers = myResults?['answers'];
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -283,6 +286,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                           'title': resultsData?['quiz']?['title'] ?? 'Correction',
                           'questions': questionsList,
                         },
+                        userAnswers: userAnswers,
                       ),
                     ),
                   );

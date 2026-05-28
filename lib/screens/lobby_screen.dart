@@ -168,6 +168,20 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 ),
                 const SizedBox(height: 30),
 
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.people, color: neonViolet),
+                      const SizedBox(width: 8),
+                      Text(
+                        "${_currentSession['playerCount'] ?? 0} JOUEURS CONNECTÉS",
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E1040)),
+                      ),
+                    ],
+                ),
+
+                const SizedBox(height: 20),
+
                 if (isOwner)
                   Card(
                     elevation: 0,
@@ -185,38 +199,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
                     ),
                   ),
 
-                const SizedBox(height: 30),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.people, color: neonViolet),
-                    const SizedBox(width: 8),
-                    Text(
-                      "${_currentSession['playerCount'] ?? 0} JOUEURS CONNECTÉS",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1E1040)),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                if (_currentSession['players'] != null && (_currentSession['players'] as List).isNotEmpty)
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      ...(_currentSession['players'] as List).map((p) {
-                        String name = p is Map ? (p['nickname'] ?? 'Anonyme') : p.toString();
-                        return Chip(
-                          label: Text(name, style: const TextStyle(color: neonViolet, fontWeight: FontWeight.bold)),
-                          backgroundColor: neonViolet.withOpacity(0.1),
-                          side: const BorderSide(color: neonViolet),
-                        );
-                      }),
-                    ],
-                  ),
 
                 const SizedBox(height: 40),
 
